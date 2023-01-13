@@ -1,0 +1,8 @@
+name: TalesOfZara
+version: '${version}'
+main: io.github.donghune.talesofzara.TalesOfZaraPlugin
+commands:
+  talesofzara:
+    description: " "
+  toz:
+    description: " "
