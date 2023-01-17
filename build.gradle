@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath("gradle.plugin.com.github.johnrengelman:shadow:7.1.2")
+        classpath "com.github.breadmoirai:github-release:2.4.1"
     }
 }
 
@@ -12,19 +13,31 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id("maven-publish")
 }
+apply plugin: "com.github.breadmoirai.github-release"
 
 group = 'as'
-version = '1.3-SNAPSHOT'
+version = '1.4-SNAPSHOT'
+def fileName = project.name + "-" + project.version + ".jar"
 
 shadowJar {
-    // release
-    archiveName(project.name + "-" + project.version + ".jar")
-    // debug
+    archiveName(fileName)
     archiveName(project.name + ".jar")
     copy {
         from "build/libs/" + project.name + ".jar"
         into "/Users/yudonghun/Downloads/1.12.2/plugins"
     }
+}
+
+githubRelease {
+    token = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+    owner = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+    repo = "minecraft-hoya"
+    tagName = project.version.toString()
+    releaseName = project.version.toString()
+    draft = true
+    prerelease = false
+    releaseAssets file(fileName)
+    overwrite = true
 }
 
 repositories {
@@ -79,11 +92,6 @@ publishing {
                 username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
                 password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
             }
-        }
-    }
-    publications {
-        gpr(MavenPublication) {
-            from(components.java)
         }
     }
 }
