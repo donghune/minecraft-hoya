@@ -6,9 +6,9 @@ import org.bukkit.inventory.ItemStack
 import java.util.*
 
 abstract class ActionItem(
-    private val name: String,
-    private val description: String,
-    private val icon: Material,
+    val name: String,
+    val description: String,
+    val icon: Material,
 ) {
     open fun action(player: Player) {}
     fun toItemStack(): ItemStack {

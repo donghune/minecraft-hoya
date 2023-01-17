@@ -1,8 +1,6 @@
 buildscript {
     repositories {
         gradlePluginPortal()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath("gradle.plugin.com.github.johnrengelman:shadow:7.1.2")
@@ -10,26 +8,23 @@ buildscript {
 }
 
 plugins {
-    id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.8.0'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'ru.kinca.google-drive-uploader' version '1.1.0'
-}
-
-googleDrive {
-    destinationFolder = 'hoya/toz'
-    file = file("build/libs/" + project.name + "-" + project.version + ".jar")
-    credentialFile = new File(System.getProperty('user.home'), '.credentials/hoya-374609-23df7004be06.json')
-    updateIfExists = true
-    clientId  = '64700318535-l84mh78ie0lj7hjq6qkk2rmulgb25029.apps.googleusercontent.com'
-    clientSecret = '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'
+    id("maven-publish")
 }
 
 group = 'as'
-version = '1.0-SNAPSHOT'
+version = '1.2-SNAPSHOT'
 
 shadowJar {
+    // release
     archiveName(project.name + "-" + project.version + ".jar")
+    // debug
+    archiveName(project.name + ".jar")
+    copy {
+        from "build/libs/" + project.name + ".jar"
+        into "/Users/yudonghun/Downloads/1.12.2/plugins"
+    }
 }
 
 repositories {
@@ -74,13 +69,21 @@ processResources {
         expand props
     }
 }
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/donghune/minecraft-hoya")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
     }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
     }
 }

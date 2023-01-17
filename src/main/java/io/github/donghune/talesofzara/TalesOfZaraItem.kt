@@ -28,7 +28,7 @@ class TalesOfZaraItem {
     ) {
         private var potionEffect = PotionEffect(PotionEffectType.GLOWING, 20 * 10, 1, false, false)
         override fun action(player: Player) {
-            TalesOfZara.playerRole.forEach { uuid: UUID, role: TalesOfZara.Role ->
+            TalesOfZara.playerRole.forEach { (uuid: UUID, role: TalesOfZara.Role) ->
                 if (role != TalesOfZara.Role.RABBIT) {
                     return@forEach
                 }

@@ -19,9 +19,13 @@ abstract class GameTask(
             /* task = */ {
                 when (time) {
                     0 -> onStart()
-                    playTime -> onStop()
+                    playTime -> {
+                        onStop()
+                        bukkitTask?.cancel()
+                    }
                     else -> onDuring(time)
                 }
+                time += 1
             },
             /* delay = */ 0L,
             /* period = */ 20L

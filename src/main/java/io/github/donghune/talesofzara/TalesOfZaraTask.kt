@@ -1,8 +1,8 @@
 package io.github.donghune.talesofzara
 
 import net.md_5.bungee.api.ChatMessageType
-import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
+import org.bukkit.Particle
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarStyle
 import org.bukkit.entity.Player
@@ -10,7 +10,6 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import java.time.Duration
 import java.time.LocalTime
-import java.util.*
 
 class TalesOfZaraTask : GameTask(60 * 45) {
     private val bossBar = Bukkit.createBossBar("[별주부전] l 용왕의 생명 00분 00초 남음", BarColor.BLUE, BarStyle.SOLID)
@@ -19,7 +18,7 @@ class TalesOfZaraTask : GameTask(60 * 45) {
         Bukkit.broadcastMessage("별주부전 이야기가 시작됩니다")
 
         // 기본템 지급
-        TalesOfZara.playerRole.forEach { uuid, role ->
+        TalesOfZara.playerRole.forEach { (uuid, role) ->
             val player: Player = Bukkit.getPlayer(uuid)
             when (role) {
                 TalesOfZara.Role.RABBIT -> {
@@ -42,9 +41,16 @@ class TalesOfZaraTask : GameTask(60 * 45) {
     }
 
     override fun onDuring(seconds: Int) {
-        if (seconds % 20 * 60 * 10 == 0) {
+        println(
+            "[별주부전] l 용왕의 생명 %02d분 %02d초 남음".format(
+                (60 * 45 - seconds) / 60,
+                (60 * 45 - seconds) % 60
+            )
+        )
+
+        if (seconds % (60 * 10) == 0) {
             Bukkit.broadcastMessage("토끼들의 수면시간 입니다.")
-            TalesOfZara.playerRole.forEach { uuid, role ->
+            TalesOfZara.playerRole.forEach { (uuid, role) ->
                 if (role == TalesOfZara.Role.RABBIT) {
                     val player: Player = Bukkit.getPlayer(uuid)
                     player.addPotionEffect(
@@ -64,24 +70,26 @@ class TalesOfZaraTask : GameTask(60 * 45) {
         for (uuid in TalesOfZara.playerRole.keys) {
             val player = Bukkit.getPlayer(uuid)
             bossBar.addPlayer(player)
-            bossBar.title =
-                "[별주부전] l 용왕의 생명 %02d분 %02d초 남음".format(
-                    60 * 45 - seconds / 60,
-                    (60 * 45 - seconds) % 60
-                )
+            bossBar.title = "[별주부전] l 용왕의 생명 %02d분 %02d초 남음".format(
+                60 * 45 - seconds / 60,
+                (60 * 45 - seconds) % 60
+            )
         }
 
         // 액션바
-        TalesOfZara.playerRole.forEach { uuid, role ->
+        TalesOfZara.playerRole.forEach { (uuid, role) ->
             val player: Player = Bukkit.getPlayer(uuid)
             if (role == TalesOfZara.Role.RABBIT) {
                 if (TalesOfZara.rabbitLiver.containsKey(player.uniqueId)) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent("[간 소지 중]"))
+                    player.spigot().sendMessage(
+                        ChatMessageType.ACTION_BAR,
+                        net.md_5.bungee.api.chat.TextComponent("[간 소지 중]")
+                    )
                 } else {
                     val hideTime = TalesOfZara.rabbitLiver[player.uniqueId]!!.hideTime
                     player.spigot().sendMessage(
                         ChatMessageType.ACTION_BAR,
-                        TextComponent(
+                        net.md_5.bungee.api.chat.TextComponent(
                             "[생존 시간 :%02d 분 %02d 초]".format(
                                 Duration.between(hideTime.plusMinutes(5), LocalTime.now()).toMinutes(),
                                 Duration.between(hideTime.plusMinutes(5), LocalTime.now()).seconds
@@ -93,7 +101,7 @@ class TalesOfZaraTask : GameTask(60 * 45) {
         }
 
         // 토끼 간 체크
-        TalesOfZara.playerRole.forEach { uuid, role ->
+        TalesOfZara.playerRole.forEach { (uuid, role) ->
             val player: Player = Bukkit.getPlayer(uuid)
             if (role == TalesOfZara.Role.RABBIT) {
                 if (TalesOfZara.rabbitLiver.containsKey(player.uniqueId)) {
@@ -104,11 +112,14 @@ class TalesOfZaraTask : GameTask(60 * 45) {
                 }
             }
         }
+
+        // 토끼 위치 보여주는 파티클
+        TalesOfZara.rabbitLiver.forEach { (t, u) -> u.location.world.spawnParticle(Particle.END_ROD, u.location, 1) }
     }
 
     override fun onStop() {
         Bukkit.broadcastMessage("게임이 종료되었습니다.")
-        TalesOfZara.playerRole.forEach { uuid, _ ->
+        TalesOfZara.playerRole.forEach { (uuid, _) ->
             val player: Player = Bukkit.getPlayer(uuid)
             player.inventory.clear()
         }

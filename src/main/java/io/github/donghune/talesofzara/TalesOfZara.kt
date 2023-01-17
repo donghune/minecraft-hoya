@@ -12,10 +12,10 @@ object TalesOfZara {
     val playerRole = HashMap<UUID, Role>()
     val rabbitLiver = HashMap<UUID, LiverData>()
     var startLocation: Location? = null
-    val gameTask = TalesOfZaraTask()
+    private val gameTask = TalesOfZaraTask()
 
     fun setPlayerClass(player: Player, role: Role) {
-        playerRole.put(player.uniqueId, role)
+        playerRole[player.uniqueId] = role
     }
 
     fun getPlayerRole(player: Player): Role? {
