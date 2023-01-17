@@ -24,7 +24,7 @@ shadowJar {
     archiveName(project.name + ".jar")
     copy {
         from "build/libs/" + project.name + ".jar"
-        into "/Users/yudonghun/Downloads/1.12.2/plugins"
+        into ".server/plugins"
     }
 }
 
