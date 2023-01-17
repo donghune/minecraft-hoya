@@ -29,3 +29,11 @@ jobs:
       
     - name: Release with Gradle
       run: ./gradlew githubRelease
+
+    - name: Discord notification
+      if: ${{ success() }}
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: '별주부전 플러그인이 배포되었습니다.\nhttps://github.com/donghune/minecraft-hoya/releases'
