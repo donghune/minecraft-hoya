@@ -29,6 +29,9 @@ jobs:
       
     - name: Release with Gradle
       run: ./gradlew githubRelease
+      env:
+        TOKEN: ${{ secrets.TOKEN }}
+        USERNAME: ${{ secrets.USERNAME }}
 
     - name: Discord notification
       if: ${{ success() }}

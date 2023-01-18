@@ -16,7 +16,7 @@ plugins {
 apply plugin: "com.github.breadmoirai.github-release"
 
 group = 'as'
-version = '1.6-SNAPSHOT'
+version = '1.7-SNAPSHOT'
 def fileName = project.name + "-" + project.version + ".jar"
 
 shadowJar {
@@ -37,7 +37,7 @@ githubRelease {
     releaseName = project.version.toString()
     draft = true
     prerelease = false
-    releaseAssets(file("build/libs/hoya_toz-1.5-SNAPSHOT.jar"))
+    releaseAssets(file("build/libs/" + fileName))
     overwrite = true
 }
 
