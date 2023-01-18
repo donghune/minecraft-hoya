@@ -23,9 +23,15 @@ jobs:
       
     - name: Clean with Gradle
       run: ./gradlew clean
+      env:
+        TOKEN: ${{ secrets.TOKEN }}
+        USERNAME: ${{ secrets.USERNAME }}
       
     - name: ShadowJar with Gradle
       run: ./gradlew shadowJar
+      env:
+        TOKEN: ${{ secrets.TOKEN }}
+        USERNAME: ${{ secrets.USERNAME }}
       
     - name: Release with Gradle
       run: ./gradlew githubRelease

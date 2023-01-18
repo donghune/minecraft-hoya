@@ -16,7 +16,7 @@ plugins {
 apply plugin: "com.github.breadmoirai.github-release"
 
 group = 'as'
-version = '1.7-SNAPSHOT'
+version = '1.8-SNAPSHOT'
 def fileName = project.name + "-" + project.version + ".jar"
 
 shadowJar {
