@@ -8,6 +8,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      TOKEN: ${{ secrets.TOKEN }}
+      USERNAME: ${{ secrets.USERNAME }}
 
     steps:
     - uses: actions/checkout@v3
@@ -23,21 +26,12 @@ jobs:
       
     - name: Clean with Gradle
       run: ./gradlew clean
-      env:
-        TOKEN: ${{ secrets.TOKEN }}
-        USERNAME: ${{ secrets.USERNAME }}
       
     - name: ShadowJar with Gradle
       run: ./gradlew shadowJar
-      env:
-        TOKEN: ${{ secrets.TOKEN }}
-        USERNAME: ${{ secrets.USERNAME }}
       
     - name: Release with Gradle
       run: ./gradlew githubRelease
-      env:
-        TOKEN: ${{ secrets.TOKEN }}
-        USERNAME: ${{ secrets.USERNAME }}
 
     - name: Discord notification
       if: ${{ success() }}
